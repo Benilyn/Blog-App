@@ -1,37 +1,28 @@
 /* jshint esversion: 6 */
 
+const bodyParser = require('body-parser');
 const express    = require('express');
-const router     = express.Router();
-const morgan     = require('morgan');
 const mongoose	 = require('mongoose');
 const app 		 = express();
 
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
-
-const blogPostsRouter = require('./blogPostsRouter');
+mongoose.Promise = global.Promise;
 
 const {PORT, DATABASE_URL} = require('./config');
 const {Blog} = require('./models');
 
+app.use(bodyParser.json());
 
-
-app.use(morgan('common'));
-app.use(express.static('public'));
-//app.use('/blog-post', blogPostsRouter);
-
-app.get('/blog-post', (req, res) => {
-  //res.send(BlogPosts);
-  Restaurant
+app.get('/posts', (req, res) => {
+  Post
   	.find()
   	.limit(10)
   	.exec()
-  	.then(blogPost => {
+  	.then(post => {
   		res.json({
-  			blogPost: blogPost.map(
-  				(blogPost) => blogPost.apiRepr())
+  			post: post.map(
+  				(post) => post.apiRepr())
   		}); //res.json
-  	}) //.then(blogPost)
+  	}) //.then(post)
   	.catch(
   		err => {
   			console.error(err);
@@ -39,16 +30,41 @@ app.get('/blog-post', (req, res) => {
   	}); //.cath
 }); //app.get(/blog-post)
 
-app.get('/blog-post/:id', (req, res) => {
-	Restaurant
+app.get('/posts/:id', (req, res) => {
+	Post
 		.findById(req.params.id)
 		.exec()
-		.then(blogPost => res.json(blogPost.apiRepr()))
+		.then(post => res.json(post.apiRepr()))
 		.catch(err => {
 			console.error(err);
 				res.status(500).json({message: 'Internal server error'});	
 		}); //.catch
 }); //app.get(/blog-post/:id)
+
+app.post('/posts', (req, res) => {
+	const requiredFields = ['title', 'content', 'author', 'created'];
+	for (let i=0; i<requiredFields.length; i++) {
+		const field = requiredFields[i];
+		if (!(field in req.body)) {
+			const message = `Missing ${field} in request body`;
+			console.error(message);
+			return res.status(400).send(message);
+		} //if (!(field in req.body))
+	} //for (let i=0)
+
+	Post
+		.create({
+			title: req.body.title,
+			content: req.body.content,
+			author: req.body.author
+		}) //.create
+		.then(
+			post => res.status(201).json(post.apiRepr()))
+		.catch(err => {
+			console.error(err);
+			res.status(500).json({message: 'Internal server error'});
+		}); //.catch
+}); //app.post
 
 
 
