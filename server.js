@@ -8,7 +8,7 @@ const app 		 = express();
 mongoose.Promise = global.Promise;
 
 const {PORT, DATABASE_URL} = require('./config');
-const {Blog} = require('./models');
+const {Post} = require('./mongoose-models');
 
 app.use(bodyParser.json());
 
@@ -19,8 +19,7 @@ app.get('/posts', (req, res) => {
   	.exec()
   	.then(post => {
   		res.json({
-  			post: post.map(
-  				(post) => post.apiRepr())
+  			post: post
   		}); //res.json
   	}) //.then(post)
   	.catch(
@@ -28,18 +27,18 @@ app.get('/posts', (req, res) => {
   			console.error(err);
   			res.status(500).json({message: 'Internal server error'});
   	}); //.cath
-}); //app.get(/blog-post)
+}); //app.get(/posts)
 
 app.get('/posts/:id', (req, res) => {
 	Post
 		.findById(req.params.id)
 		.exec()
-		.then(post => res.json(post.apiRepr()))
+		.then(post => res.json(post))
 		.catch(err => {
 			console.error(err);
 				res.status(500).json({message: 'Internal server error'});	
 		}); //.catch
-}); //app.get(/blog-post/:id)
+}); //app.get(/posts/:id)
 
 app.post('/posts', (req, res) => {
 	const requiredFields = ['title', 'content', 'author', 'created'];
