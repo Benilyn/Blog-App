@@ -39,6 +39,21 @@ app.get('/blog-post', (req, res) => {
   	}); //.cath
 }); //app.get(/blog-post)
 
+app.get('/blog-post/:id', (req, res) => {
+	Restaurant
+		.findById(req.params.id)
+		.exec()
+		.then(blogPost => res.json(blogPost.apiRepr()))
+		.catch(err => {
+			console.error(err);
+				res.status(500).json({message: 'Internal server error'});	
+		}); //.catch
+}); //app.get(/blog-post/:id)
+
+
+
+
+
 let server;
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
