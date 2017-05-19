@@ -101,6 +101,10 @@ app.delete('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 }); //app.delete
 
+app.use('*', function(req, res) {
+  res.status(404).json({message: 'Not Found'});
+});
+
 
 
 let server;
