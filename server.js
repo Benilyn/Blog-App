@@ -18,11 +18,26 @@ const {Blog} = require('./models');
 
 app.use(morgan('common'));
 app.use(express.static('public'));
-app.use('/blog-post', blogPostsRouter);
+//app.use('/blog-post', blogPostsRouter);
 
-app.get('/', (req, res) => {
-  res.send(BlogPosts);
-});
+app.get('/blog-post', (req, res) => {
+  //res.send(BlogPosts);
+  Restaurant
+  	.find()
+  	.limit(10)
+  	.exec()
+  	.then(blogPost => {
+  		res.json({
+  			blogPost: blogPost.map(
+  				(blogPost) => blogPost.apiRepr())
+  		}); //res.json
+  	}) //.then(blogPost)
+  	.catch(
+  		err => {
+  			console.error(err);
+  			res.status(500).json({message: 'Internal server error'});
+  	}); //.cath
+}); //app.get(/blog-post)
 
 let server;
 
