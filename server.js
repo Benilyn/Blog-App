@@ -41,7 +41,7 @@ app.get('/posts/:id', (req, res) => {
 }); //app.get(/posts/:id)
 
 app.post('/posts', (req, res) => {
-	const requiredFields = ['title', 'content', 'author', 'created'];
+	const requiredFields = ['title', 'content', 'author'];
 	for (let i=0; i<requiredFields.length; i++) {
 		const field = requiredFields[i];
 		if (!(field in req.body)) {
@@ -58,7 +58,7 @@ app.post('/posts', (req, res) => {
 			author: req.body.author
 		}) //.create
 		.then(
-			post => res.status(201).json(post.apiRepr()))
+			post => res.status(201).json(post))
 		.catch(err => {
 			console.error(err);
 			res.status(500).json({message: 'Internal server error'});
