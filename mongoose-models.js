@@ -7,7 +7,8 @@ const postSchema = mongoose.Schema({
   author: {
     firstName: String,
     lastName: String
-  }
+  },
+  created: {type: Date, default: Date.now}
 });
 
 
