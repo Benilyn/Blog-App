@@ -11,6 +11,18 @@ const postSchema = mongoose.Schema({
   created: {type: Date, default: Date.now}
 });
 
+postSchema.virtual('authorString').get(function() {
+  return `${this.author.firstName} ${this.author.lastName}`.trim()});
+
+postSchema.methods.apiRepr = function() {
+  return {
+    id: this._id,
+    title: this.title,
+    content: this.content,
+    author: this.authorString,
+    created: this.created
+  }; //return
+}; //postSchema.methods.apiRepr
 
 const Post = mongoose.model('Post', postSchema, 'post');
 

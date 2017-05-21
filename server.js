@@ -19,7 +19,8 @@ app.get('/posts', (req, res) => {
   	.exec()
   	.then(post => {
   		res.json({
-  			post: post
+  			post: post.map(
+  				(post)=> post.apiRepr())	
   		}); //res.json
   	}) //.then(post)
   	.catch(
@@ -33,7 +34,7 @@ app.get('/posts/:id', (req, res) => {
 	Post
 		.findById(req.params.id)
 		.exec()
-		.then(post => res.json(post))
+		.then(post => res.json(post.apiRepr()))
 		.catch(err => {
 			console.error(err);
 				res.status(500).json({message: 'Internal server error'});	
@@ -55,10 +56,11 @@ app.post('/posts', (req, res) => {
 		.create({
 			title: req.body.title,
 			content: req.body.content,
-			author: req.body.author
+			author: req.body.author,
+			created: req.body.created
 		}) //.create
 		.then(
-			post => res.status(201).json(post))
+			post => res.status(201).json(post.apiRepr()))
 		.catch(err => {
 			console.error(err);
 			res.status(500).json({message: 'Internal server error'});
